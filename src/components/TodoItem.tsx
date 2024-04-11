@@ -11,17 +11,17 @@ export default function TodoItem({ task }: { task: Task }) {
   }));
 
   return (
-    <div className='flex min-w-80 items-center' key={id}>
+    <div className='flex items-start justify-start space-x-2' key={id}>
       <Button
-        className='size-5'
+        className='mt-1 size-5'
         variant='ghost'
         size='icon'
         onClick={() => removeTask(id)}
       >
-        <Cross2Icon className='size-5 text-destructive' />
+        <Cross2Icon className='dark: size-5 text-red-600 dark:text-red-500 ' />
       </Button>
       <Checkbox
-        className='size-5'
+        className='mt-1 size-5'
         id={id}
         checked={status === 'done'}
         onCheckedChange={() => toggleStatus(id)}
@@ -29,12 +29,11 @@ export default function TodoItem({ task }: { task: Task }) {
       <div
         className={cn(
           status === 'done' && 'line-through opacity-50',
-          'max-w-full break-words font-medium outline-none'
+          'max-w-[600px] break-words font-medium outline-none'
         )}
         id={id}
-        onBlur={(e) => {
-          editTask(id, szh(e.currentTarget.innerHTML));
-        }}
+        onBlur={(e) => editTask(id, szh(e.currentTarget.innerHTML))}
+        onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()}
         contentEditable
         dangerouslySetInnerHTML={{ __html: description }}
       />

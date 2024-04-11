@@ -67,10 +67,7 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
   body {
-    @apply bg-background text-foreground;
+    @apply m-0 box-border h-full w-screen overflow-hidden bg-background p-0 text-foreground;
   }
 }
