@@ -1,13 +1,16 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import Sidebar from "@/components/Sidebar";
+import type { Metadata } from 'next';
+import { Roboto } from 'next/font/google';
+import './globals.css';
+import { cn } from '@/lib/utils';
+import { ThemeProvider } from '@/components/ThemeProvider';
+import Menu from '@/components/Menu';
+import Backdrop from '@/components/Backdrop';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Roboto({ subsets: ['latin'], weight: ['400', '500', '700'] });
 
 export const metadata: Metadata = {
-  title: "Todo List",
-  description: "A simple todo-list app for testing .Net API",
+  title: 'Todo List',
+  description: 'A simple todo-list app for testing .Net API',
 };
 
 export default function RootLayout({
@@ -16,10 +19,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className + " w-screen h-screen flex"}>
-        <Sidebar />
-        {children}
+    <html lang='en'>
+      <body
+        className={cn(inter.className, 'relative flex flex-col sm:flex-row')}
+      >
+        <ThemeProvider attribute='class' enableSystem disableTransitionOnChange>
+          <Menu />
+          <Backdrop />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

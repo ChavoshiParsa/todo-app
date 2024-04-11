@@ -43,53 +43,74 @@ export type Actions = {
   removeTask: (id: string) => void;
 };
 
+export const useUIStore = create<
+  { isMenuOpen: boolean } & {
+    toggleMenu: () => void;
+    setMenu: (value: boolean) => void;
+  }
+>((set) => ({
+  isMenuOpen: false,
+  toggleMenu() {
+    set((state) => ({ isMenuOpen: !state.isMenuOpen }));
+  },
+  setMenu(value) {
+    set(() => ({ isMenuOpen: value }));
+  },
+}));
+
 export const useTodoStore = create<State & Actions>()(
-  // persist(
-  (set) => ({
-    tasks: initial,
-    addTask(title, description) {
-      set((state) => ({
-        tasks: [
-          ...state.tasks,
-          {
-            id: state.tasks.length.toString(),
-            title,
-            description,
-            status: 'undone',
-          },
-        ],
-      }));
-    },
-    toggleStatus(id) {
-      set((state) => ({
-        tasks: state.tasks.map((task) =>
-          task.id === id
-            ? {
-                ...task,
-                status: task.status === 'undone' ? 'done' : 'undone',
-              }
-            : { ...task }
-        ),
-      }));
-    },
-    editTask(id, newDescription) {
-      set((state) => ({
-        tasks: state.tasks.map((task) =>
-          task.id === id
-            ? {
-                ...task,
-                description: newDescription,
-              }
-            : { ...task }
-        ),
-      }));
-    },
-    removeTask(id) {
-      set((state) => ({
-        tasks: state.tasks.filter((task) => task.id !== id),
-      }));
-    },
-  })
-  // { name: "task-store" }
-  // )
+  persist(
+    (set) => ({
+      tasks: [],
+      addTask(title, description) {
+        set((state) => ({
+          tasks: [
+            ...state.tasks,
+            {
+              id: state.tasks.length.toString(),
+              title: decodeURIComponent(title.trim()),
+              description: description.trim(),
+              status: 'undone',
+            },
+          ],
+        }));
+      },
+      toggleStatus(id) {
+        set((state) => ({
+          tasks: state.tasks.map((task) =>
+            task.id === id
+              ? {
+                  ...task,
+                  status: task.status === 'undone' ? 'done' : 'undone',
+                }
+              : { ...task }
+          ),
+        }));
+      },
+      editTask(id, newDescription) {
+        set((state) => {
+          if (newDescription.trim() === '')
+            return {
+              tasks: state.tasks.filter((task) => task.id !== id),
+            };
+          return {
+            tasks: state.tasks.map((task) =>
+              task.id === id
+                ? {
+                    ...task,
+                    description: newDescription.trim(),
+                  }
+                : { ...task }
+            ),
+          };
+        });
+      },
+      removeTask(id) {
+        set((state) => ({
+          tasks: state.tasks.filter((task) => task.id !== id),
+        }));
+      },
+    }),
+    { name: 'task-store' }
+  )
 );
